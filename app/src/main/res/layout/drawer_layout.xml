@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/graph"
+        android:scaleType="fitXY"
+        android:id="@+id/dLImage" />
+
+    <TextView
+        android:paddingLeft="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="New Text"
+        android:gravity="center"
+        android:id="@+id/dLtxt" />
+</LinearLayout>

@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="android.com.semantica.inr.graph"
+    android:weightSum="1"
+    >
+
+
+   <LinearLayout
+       android:layout_width="fill_parent"
+       android:layout_height="match_parent"
+       android:layout_weight="0.4"
+       android:orientation="horizontal"
+       android:id="@+id/graphlayout"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listView2"
+        android:layout_gravity="center_horizontal"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"
+        android:layout_weight="0.6"/>
+</LinearLayout>
