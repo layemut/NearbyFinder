@@ -100,10 +100,8 @@ public class mapActivity extends ActionBarActivity {
         sb.append("&sensor=true");
         sb.append("&key=AIzaSyCRLa4LQZWNQBcjCYcIVYA45i9i8zfClqc");
 
-        // Creating a new non-ui thread task to download json data
+       
         PlacesTask placesTask = new PlacesTask();
-
-        // Invokes the "doInBackground()" method of the class PlaceTask
         placesTask.execute(sb.toString());
 
 
@@ -149,13 +147,13 @@ public class mapActivity extends ActionBarActivity {
                 originOp.icon(BitmapDescriptorFactory.fromResource(R.drawable.house));
                 map.addMarker(originOp);
                 map.addMarker(destOp);
-                // Getting URL to the Google Directions API
+               
                 String url = getDirectionsUrl(origin, dest);
 
 
                 DownloadTask downloadTask = new DownloadTask();
 
-                // Start downloading json data from Google Directions API
+     
                 downloadTask.execute(url);
 
             }
@@ -167,7 +165,6 @@ public class mapActivity extends ActionBarActivity {
 
         String data = null;
 
-        // Invoked by execute() method of this object
         @Override
         protected String doInBackground(String... url) {
             try {
@@ -178,13 +175,10 @@ public class mapActivity extends ActionBarActivity {
             return data;
         }
 
-        // Executed after the complete execution of doInBackground() method
+        
         @Override
         protected void onPostExecute(String result) {
             ParserTask parserTask = new ParserTask();
-
-            // Start parsing the Google places in JSON format
-            // Invokes the "doInBackground()" method of the class ParseTask
             parserTask.execute(result);
         }
 
@@ -200,8 +194,6 @@ public class mapActivity extends ActionBarActivity {
             super.onPreExecute();
 
         }
-
-        // Invoked by execute() method of this object
         @Override
         protected List<HashMap<String, String>> doInBackground(String... jsonData) {
 
@@ -212,7 +204,7 @@ public class mapActivity extends ActionBarActivity {
             try {
                 jObject = new JSONObject(jsonData[0]);
 
-                /** Getting the parsed data as a List construct */
+         
                 places = placeJsonParser.parse(jObject);
 
 
@@ -223,10 +215,10 @@ public class mapActivity extends ActionBarActivity {
         }
 
 
-        // Executed after the complete execution of doInBackground() method
+    
         @Override
         protected void onPostExecute(List<HashMap<String, String>> list) {
-            // Clears all the existing markers
+          
             pDialog.dismiss();
             map.clear();
             String[] nameList = new String[list.size()];
@@ -235,35 +227,34 @@ public class mapActivity extends ActionBarActivity {
             String[] longi = new String[list.size()];
             for (int i = 0; i < list.size(); i++) {
 
-                // Creating a marker
+               
                 MarkerOptions markerOptions = new MarkerOptions();
 
-                // Getting a place from the places list
+                
                 HashMap<String, String> hmPlace = list.get(i);
 
-                // Getting latitude of the place
+                
                 double lat = Double.parseDouble(hmPlace.get("lat"));
 
-                // Getting longitude of the place
+          
                 double lng = Double.parseDouble(hmPlace.get("lng"));
 
-                // Getting name
+    
                 String name = hmPlace.get("place_name");
 
                 nameList[i] = hmPlace.get("place_name");
                 address[i] = hmPlace.get("vicinity");
                 lati[i] = hmPlace.get("lat");
                 longi[i] = hmPlace.get("lng");
-                // Getting vicinity
+               
                 String vicinity = hmPlace.get("vicinity");
 
 
                 LatLng latLng = new LatLng(lat, lng);
-                // Setting the position for the marker
+             
                 markerOptions.position(latLng);
 
-                // Setting the title for the marker.
-                //This will be displayed on taping the marker
+               
                 markerOptions.title(name + " : " + vicinity);
                 if (getIntent().getExtras().getString("type").equals("hospital")) {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.hospitalmarker));
@@ -290,13 +281,13 @@ public class mapActivity extends ActionBarActivity {
         try {
             URL url = new URL(strUrl);
 
-            // Creating an http connection to communicate with url
+
             urlConnection = (HttpURLConnection) url.openConnection();
 
-            // Connecting to url
+          
             urlConnection.connect();
 
-            // Reading data from url
+           
             iStream = urlConnection.getInputStream();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
@@ -353,15 +344,14 @@ public class mapActivity extends ActionBarActivity {
 
     private class DownloadTask extends AsyncTask<String, Void, String> {
 
-        // Downloading data in non-ui thread
         @Override
         protected String doInBackground(String... url) {
 
-            // For storing data from web service
+        
             String data = "";
 
             try {
-                // Fetching the data from web service
+                
                 data = downloaddrawUrl(url[0]);
             } catch (Exception e) {
                 Log.d("Background Task", e.toString());
@@ -369,22 +359,21 @@ public class mapActivity extends ActionBarActivity {
             return data;
         }
 
-        // Executes in UI thread, after the execution of
-        // doInBackground()
+        
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
             drawParserTask parserTask = new drawParserTask();
 
-            // Invokes the thread for parsing the JSON data
+           
             parserTask.execute(result);
         }
     }
 
     private class drawParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
-        // Parsing the data in non-ui thread
+        
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -400,7 +389,7 @@ public class mapActivity extends ActionBarActivity {
                 jObject = new JSONObject(jsonData[0]);
                 DirectionsJSONParser parser = new DirectionsJSONParser();
 
-                // Starts parsing data
+               
                 routes = parser.parse(jObject);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -408,22 +397,22 @@ public class mapActivity extends ActionBarActivity {
             return routes;
         }
 
-        // Executes in UI thread, after the parsing process
+        
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
             ArrayList<LatLng> points = null;
             PolylineOptions lineOptions = null;
             String distance = "";
             String duration = "";
-            // Traversing through all the routes
+            
             for (int i = 0; i < result.size(); i++) {
                 points = new ArrayList<LatLng>();
                 lineOptions = new PolylineOptions();
 
-                // Fetching i-th route
+              
                 List<HashMap<String, String>> path = result.get(i);
 
-                // Fetching all the points in i-th route
+              
                 for (int j = 0; j < path.size(); j++) {
                     HashMap<String, String> point = path.get(j);
                     if (j == 0) {    // Get distance from the list
@@ -458,13 +447,13 @@ public class mapActivity extends ActionBarActivity {
         try {
             URL url = new URL(strUrl);
 
-            // Creating an http connection to communicate with url
+          
             urlConnection = (HttpURLConnection) url.openConnection();
 
-            // Connecting to url
+          
             urlConnection.connect();
 
-            // Reading data from url
+         
             iStream = urlConnection.getInputStream();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
@@ -493,19 +482,17 @@ public class mapActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        
         getMenuInflater().inflate(R.menu.menu_index, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+      
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+  
         if (id == R.id.action_settings) {
             return true;
         }
